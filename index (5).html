@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lateral Thinking BI | Soluciones de Datos para su Negocio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:   #0d1b3e;
+      --pink:   #e040a0;
+      --violet: #9b59d0;
+      --blue:   #4a8fe8;
+      --grad:   linear-gradient(135deg, #e040a0, #9b59d0, #4a8fe8);
+      --white:  #ffffff;
+      --off:    #f7f8fc;
+      --light:  #eef0f7;
+      --text:   #1a2340;
+      --muted:  #6b7a99;
+      --border: #e2e6f0;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; line-height: 1.7; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: var(--violet); border-radius: 3px; }
+
+    /* LANG */
+    html[data-lang="es"] [data-en] { display: none !important; }
+    html[data-lang="en"] [data-es] { display: none !important; }
+
+    #lang-btn {
+      position: fixed; top: 18px; right: 24px; z-index: 300;
+      background: var(--white); border: 1px solid var(--border);
+      color: var(--navy); padding: 6px 14px; border-radius: 6px;
+      cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px;
+      font-weight: 600; letter-spacing: .06em;
+      transition: border-color .2s, color .2s;
+    }
+    #lang-btn:hover { border-color: var(--violet); color: var(--violet); }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      background: rgba(255,255,255,0.96); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 6vw; height: 68px; transition: box-shadow .3s;
+    }
+    nav.scrolled { box-shadow: 0 2px 20px rgba(13,27,62,0.08); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 36px; border-radius: 8px; }
+    .nav-logo-text { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: var(--navy); }
+    .nav-logo-text em { font-style: normal; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-links { display: flex; gap: 28px; list-style: none; margin-right: 100px; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--navy); }
+    .nav-cta { background: var(--navy); color: #fff; padding: 10px 22px; border-radius: 6px; font-size: 14px; font-weight: 600; text-decoration: none; transition: background .2s; }
+    .nav-cta:hover { background: var(--violet); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; margin-right: 80px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--navy); border-radius: 2px; }
+    #mobile-menu { display: none; position: fixed; top: 68px; left: 0; right: 0; background: #fff; z-index: 199; flex-direction: column; border-bottom: 1px solid var(--border); padding: 16px 6vw 24px; }
+    #mobile-menu.open { display: flex; }
+    #mobile-menu a { color: var(--text); text-decoration: none; font-size: 16px; font-weight: 500; padding: 12px 0; border-bottom: 1px solid var(--border); }
+
+    /* HERO */
+    #hero { min-height: 100vh; display: flex; align-items: center; padding: 100px 6vw 80px; background: var(--white); position: relative; overflow: hidden; }
+    #hero::before { content: ''; position: absolute; top: -160px; right: -160px; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(155,89,208,0.07) 0%, transparent 70%); pointer-events: none; }
+    .hero-inner { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 72px; align-items: center; width: 100%; position: relative; z-index: 1; }
+    .hero-eyebrow { display: inline-flex; align-items: center; border: 1px solid rgba(155,89,208,0.25); padding: 5px 14px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--violet); margin-bottom: 20px; }
+    h1 { font-family: 'Sora', sans-serif; font-size: clamp(34px, 4vw, 58px); font-weight: 800; line-height: 1.1; color: var(--navy); letter-spacing: -.02em; margin-bottom: 22px; }
+    h1 .g { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-desc { font-size: 17px; color: var(--muted); max-width: 500px; line-height: 1.8; margin-bottom: 36px; }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary { background: var(--navy); color: #fff; padding: 13px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; transition: background .2s; }
+    .btn-primary:hover { background: var(--violet); }
+    .btn-secondary { border: 1.5px solid var(--border); color: var(--navy); padding: 13px 28px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px; transition: border-color .2s, color .2s; }
+    .btn-secondary:hover { border-color: var(--violet); color: var(--violet); }
+    .hero-visual { display: flex; justify-content: flex-end; }
+    .hero-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 36px 32px; box-shadow: 0 16px 56px rgba(13,27,62,0.1); width: 100%; max-width: 380px; position: relative; }
+    .hero-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--grad); border-radius: 16px 16px 0 0; }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .card-header img { width: 46px; height: 46px; border-radius: 10px; }
+    .card-header-text { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: var(--navy); line-height: 1.3; }
+    .card-header-text span { display: block; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .metric { background: var(--off); border-radius: 10px; padding: 16px 14px; border: 1px solid var(--border); }
+    .metric-val { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+    .metric-lbl { font-size: 11px; color: var(--muted); margin-top: 5px; font-weight: 500; }
+    .tech-row { display: flex; flex-wrap: wrap; gap: 7px; }
+    .tech-tag { background: var(--light); border: 1px solid var(--border); padding: 4px 11px; border-radius: 4px; font-size: 11px; font-weight: 600; color: var(--navy); }
+
+    /* SECTIONS */
+    section { padding: 88px 6vw; }
+    .s-label { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--violet); margin-bottom: 10px; }
+    .s-title { font-family: 'Sora', sans-serif; font-size: clamp(26px, 3vw, 42px); font-weight: 800; line-height: 1.15; color: var(--navy); letter-spacing: -.02em; }
+    .s-title .g { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .s-desc { color: var(--muted); max-width: 580px; margin-top: 14px; font-size: 16px; line-height: 1.75; }
+    .s-bar { width: 48px; height: 3px; background: var(--grad); border-radius: 2px; margin-top: 18px; }
+
+    /* QUÉ HACEMOS */
+    #que-hacemos { background: var(--off); }
+    .qh-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 52px; }
+    .qh-list { display: flex; flex-direction: column; gap: 16px; }
+    .qh-item { display: flex; gap: 16px; align-items: flex-start; background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; transition: border-color .2s; }
+    .qh-item:hover { border-color: rgba(155,89,208,0.3); }
+    .qh-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--grad); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .qh-info h4 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+    .qh-info p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+    .qh-prose { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 36px; box-shadow: 0 4px 24px rgba(13,27,62,0.05); }
+    .qh-prose p { font-size: 15px; color: var(--muted); line-height: 1.85; margin-bottom: 16px; }
+    .qh-prose p:last-child { margin-bottom: 0; }
+    .qh-prose strong { color: var(--text); font-weight: 600; }
+
+    /* SOLUCIONES */
+    #soluciones { background: var(--white); }
+    .sol-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 20px; margin-top: 52px; }
+    .sol-card { border: 1px solid var(--border); border-radius: 14px; padding: 32px 28px; background: var(--white); transition: transform .25s, box-shadow .25s, border-color .25s; position: relative; overflow: hidden; }
+    .sol-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--grad); transform: scaleX(0); transform-origin: left; transition: transform .3s; }
+    .sol-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(13,27,62,0.09); border-color: rgba(155,89,208,0.2); }
+    .sol-card:hover::after { transform: scaleX(1); }
+    .sol-icon { font-size: 28px; margin-bottom: 18px; }
+    .sol-card h3 { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+    .sol-card p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 18px; }
+    .sol-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .sol-tag { background: var(--off); border: 1px solid var(--border); padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; color: var(--navy); }
+
+    /* PRÁCTICAS */
+    #practicas { background: var(--navy); }
+    #practicas .s-label { color: rgba(155,89,208,0.9); }
+    #practicas .s-title { color: #fff; }
+    #practicas .s-desc { color: rgba(255,255,255,0.5); }
+    .prac-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; margin-top: 52px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; overflow: hidden; }
+    .prac-item { background: var(--navy); padding: 28px 26px; transition: background .2s; }
+    .prac-item:hover { background: rgba(155,89,208,0.12); }
+    .prac-num { font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700; color: var(--violet); letter-spacing: .1em; margin-bottom: 10px; }
+    .prac-item h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+    .prac-item p { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+    /* NOSOTROS */
+    #nosotros { background: var(--off); }
+    .nos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; margin-top: 52px; }
+    .nos-text p { color: var(--muted); font-size: 15px; line-height: 1.85; margin-bottom: 16px; }
+    .nos-text strong { color: var(--text); font-weight: 600; }
+    .nos-visual { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 36px; box-shadow: 0 8px 32px rgba(13,27,62,0.07); position: relative; }
+    .nos-visual::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--grad); border-radius: 16px 16px 0 0; }
+    .nos-logo-area { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .nos-logo-area img { width: 52px; height: 52px; border-radius: 12px; }
+    .nos-logo-area div { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: var(--navy); }
+    .nos-logo-area small { display: block; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+    .nos-skills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .nos-skill { background: var(--off); border: 1px solid var(--border); padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--navy); }
+    .nos-quote { background: var(--off); border-left: 3px solid var(--violet); border-radius: 0 8px 8px 0; padding: 16px 18px; font-size: 14px; color: var(--muted); line-height: 1.7; font-style: italic; }
+
+    /* STACK */
+    #stack { background: var(--white); }
+    .stack-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+    .stack-item { background: var(--off); border: 1px solid var(--border); border-radius: 6px; padding: 10px 18px; font-size: 13px; font-weight: 600; color: var(--navy); transition: border-color .2s, background .2s; }
+    .stack-item:hover { border-color: var(--violet); background: rgba(155,89,208,0.05); }
+
+    /* MODELO */
+    #modelo { background: var(--off); }
+    .mod-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 48px; }
+    .mod-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 32px 28px; transition: transform .25s, border-color .25s; }
+    .mod-card:hover { transform: translateY(-3px); border-color: rgba(155,89,208,0.25); }
+    .mod-num { font-family: 'Sora', sans-serif; font-size: 36px; font-weight: 800; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: 14px; }
+    .mod-card h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+    .mod-card p { font-size: 14px; color: var(--muted); line-height: 1.75; }
+
+    /* CONTACTO */
+    #contacto { background: var(--navy); }
+    #contacto .s-label { color: rgba(155,89,208,0.9); }
+    #contacto .s-title { color: #fff; }
+    #contacto .s-desc { color: rgba(255,255,255,0.5); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 52px; align-items: start; }
+    .contact-info p { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.8; margin-bottom: 24px; }
+    .contact-linkedin { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px 18px; border-radius: 8px; text-decoration: none; color: #fff; font-size: 14px; font-weight: 500; transition: background .2s, border-color .2s; }
+    .contact-linkedin:hover { background: rgba(155,89,208,0.15); border-color: rgba(155,89,208,0.4); }
+
+    /* FORM */
+    .contact-form { display: flex; flex-direction: column; gap: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: .06em; text-transform: uppercase; }
+    .form-field input, .form-field textarea, .form-field select {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 12px 16px; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 14px;
+      transition: border-color .2s, background .2s; outline: none;
+    }
+    .form-field input::placeholder, .form-field textarea::placeholder { color: rgba(255,255,255,0.3); }
+    .form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: rgba(155,89,208,0.6); background: rgba(155,89,208,0.08); }
+    .form-field textarea { resize: vertical; min-height: 110px; }
+    .form-field select option { background: var(--navy); color: #fff; }
+    .form-submit {
+      background: var(--grad); color: #fff; border: none;
+      padding: 14px 32px; border-radius: 6px; font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: opacity .2s, transform .2s; align-self: flex-start;
+    }
+    .form-submit:hover { opacity: .88; transform: translateY(-1px); }
+    #form-success { display: none; background: rgba(155,89,208,0.15); border: 1px solid rgba(155,89,208,0.4); border-radius: 10px; padding: 18px 20px; color: #fff; font-size: 14px; line-height: 1.6; }
+
+    /* FOOTER */
+    footer { background: #080d1a; padding: 28px 6vw; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-brand { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: #fff; }
+    .footer-brand em { font-style: normal; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    footer p { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 960px) {
+      .hero-inner, .qh-grid, .nos-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      .hero-visual { justify-content: center; }
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LANG TOGGLE -->
+<button id="lang-btn" onclick="toggleLang()">
+  <span data-es>EN</span><span data-en>ES</span>
+</button>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <img src="logo.jpeg" alt="Lateral Thinking BI" onerror="this.style.display='none'"/>
+    <span class="nav-logo-text">Lateral Thinking <em>BI</em></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#que-hacemos" data-es>Qué Hacemos</a><a href="#que-hacemos" data-en>What We Do</a></li>
+    <li><a href="#soluciones" data-es>Soluciones</a><a href="#soluciones" data-en>Solutions</a></li>
+    <li><a href="#nosotros" data-es>Nosotros</a><a href="#nosotros" data-en>About</a></li>
+    <li><a href="#stack" data-es>Tecnología</a><a href="#stack" data-en>Technology</a></li>
+    <li><a href="#contacto" data-es>Contacto</a><a href="#contacto" data-en>Contact</a></li>
+  </ul>
+  <a href="#contacto" class="nav-cta">
+    <span data-es>Contáctenos</span><span data-en>Contact Us</span>
+  </a>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div id="mobile-menu">
+  <a href="#que-hacemos" onclick="toggleMenu()"><span data-es>Qué Hacemos</span><span data-en>What We Do</span></a>
+  <a href="#soluciones" onclick="toggleMenu()"><span data-es>Soluciones</span><span data-en>Solutions</span></a>
+  <a href="#nosotros" onclick="toggleMenu()"><span data-es>Nosotros</span><span data-en>About</span></a>
+  <a href="#stack" onclick="toggleMenu()"><span data-es>Tecnología</span><span data-en>Technology</span></a>
+  <a href="#contacto" onclick="toggleMenu()"><span data-es>Contacto</span><span data-en>Contact</span></a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">
+        <span data-es>Business Intelligence · Datos · Finanzas</span>
+        <span data-en>Business Intelligence · Data · Finance</span>
+      </div>
+      <h1 data-es>Soluciones de Datos<br>para <span class="g">hacer crecer<br>su negocio</span></h1>
+      <h1 data-en>Data Solutions<br>to <span class="g">grow<br>your business</span></h1>
+      <p class="hero-desc" data-es>Aprovechamos sus datos para construir herramientas concretas que mejoran la toma de decisiones. Trabajamos con organizaciones que necesitan resultados, no teoría.</p>
+      <p class="hero-desc" data-en>We leverage your data to build concrete tools that improve decision-making. We work with organizations that need results, not theory.</p>
+      <div class="hero-btns">
+        <a href="#soluciones" class="btn-primary"><span data-es>Ver soluciones</span><span data-en>Our solutions</span></a>
+        <a href="#contacto" class="btn-secondary"><span data-es>Contáctenos</span><span data-en>Contact us</span></a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="card-header">
+          <img src="logo.jpeg" alt="Lateral Thinking BI" onerror="this.style.display='none'"/>
+          <div class="card-header-text">
+            Lateral Thinking BI
+            <span data-es>Consultoría & Business Intelligence</span>
+            <span data-en>Consulting & Business Intelligence</span>
+          </div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="metric-val">+10</div><div class="metric-lbl" data-es>Clientes activos</div><div class="metric-lbl" data-en>Active clients</div></div>
+          <div class="metric"><div class="metric-val">+5</div><div class="metric-lbl" data-es>Años de experiencia</div><div class="metric-lbl" data-en>Years of experience</div></div>
+          <div class="metric"><div class="metric-val">100%</div><div class="metric-lbl" data-es>A medida</div><div class="metric-lbl" data-en>Tailored</div></div>
+          <div class="metric"><div class="metric-val">+3</div><div class="metric-lbl" data-es>Industrias</div><div class="metric-lbl" data-en>Industries</div></div>
+        </div>
+        <div class="tech-row">
+          <span class="tech-tag">Power BI</span>
+          <span class="tech-tag">Excel</span>
+          <span class="tech-tag">Google Apps</span>
+          <span class="tech-tag">Python</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUÉ HACEMOS -->
+<section id="que-hacemos">
+  <div class="reveal">
+    <div class="s-label"><span data-es>Qué Hacemos</span><span data-en>What We Do</span></div>
+    <h2 class="s-title">
+      <span data-es>Convertimos información<br>en <span class="g">valor de negocio</span></span>
+      <span data-en>We turn information<br>into <span class="g">business value</span></span>
+    </h2>
+    <div class="s-bar"></div>
+    <p class="s-desc" data-es>Resolvemos desafíos empresariales concretos explotando la información disponible y convirtiéndola en herramientas que mejoran los resultados de nuestros clientes.</p>
+    <p class="s-desc" data-en>We solve concrete business challenges by exploiting available information and turning it into tools that improve our clients' results.</p>
+  </div>
+  <div class="qh-grid">
+    <div class="qh-list reveal">
+      <div class="qh-item">
+        <div class="qh-icon">📊</div>
+        <div class="qh-info">
+          <h4 data-es>Visualización y Analítica</h4><h4 data-en>Visualization & Analytics</h4>
+          <p data-es>Tableros de control que centralizan los indicadores clave y permiten tomar decisiones con información en tiempo real.</p>
+          <p data-en>Control dashboards that centralize key indicators and enable real-time data-driven decision making.</p>
+        </div>
+      </div>
+      <div class="qh-item">
+        <div class="qh-icon">🧩</div>
+        <div class="qh-info">
+          <h4 data-es>Sistemas de Gestión a Medida</h4><h4 data-en>Custom Management Systems</h4>
+          <p data-es>Aplicaciones digitales que automatizan procesos operativos y ordenan la información del negocio de forma simple y efectiva.</p>
+          <p data-en>Digital applications that automate operational processes and organize business information simply and effectively.</p>
+        </div>
+      </div>
+      <div class="qh-item">
+        <div class="qh-icon">📈</div>
+        <div class="qh-info">
+          <h4 data-es>Asesoramiento Financiero</h4><h4 data-en>Financial Advisory</h4>
+          <p data-es>Análisis de costos, estructuras impositivas y planificación financiera para optimizar la rentabilidad del negocio.</p>
+          <p data-en>Cost analysis, tax structures and financial planning to optimize business profitability.</p>
+        </div>
+      </div>
+      <div class="qh-item">
+        <div class="qh-icon">🎓</div>
+        <div class="qh-info">
+          <h4 data-es>Capacitación</h4><h4 data-en>Training</h4>
+          <p data-es>Programas de formación en finanzas y análisis de datos para equipos y profesionales que quieren potenciar sus habilidades.</p>
+          <p data-en>Finance and data analysis training programs for teams and professionals looking to enhance their skills.</p>
+        </div>
+      </div>
+    </div>
+    <div class="qh-prose reveal">
+      <p data-es><strong>Solucionamos las preguntas de negocio que más importan:</strong> las que impactan directamente en la rentabilidad, la eficiencia operativa y la toma de decisiones estratégicas.</p>
+      <p data-en><strong>We solve the business questions that matter most:</strong> those that directly impact profitability, operational efficiency and strategic decision-making.</p>
+      <p data-es><strong>Nos enorgullece nuestro entendimiento del negocio</strong> y nuestro compromiso con soluciones prácticas. No entregamos presentaciones — entregamos herramientas que se usan desde el primer día.</p>
+      <p data-en><strong>We take pride in our business understanding</strong> and commitment to practical solutions. We don't deliver presentations — we deliver tools that are used from day one.</p>
+      <p data-es>Trabajamos con <strong>organizaciones de distintas industrias</strong> que quieren aprovechar su información para crecer y tomar mejores decisiones.</p>
+      <p data-en>We work with <strong>organizations across different industries</strong> that want to leverage their information to grow and make better decisions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUCIONES -->
+<section id="soluciones">
+  <div class="reveal">
+    <div class="s-label"><span data-es>Nuestras Soluciones</span><span data-en>Our Solutions</span></div>
+    <h2 class="s-title"><span data-es>Lo que <span class="g">ofrecemos</span></span><span data-en>What we <span class="g">offer</span></span></h2>
+    <div class="s-bar"></div>
+    <p class="s-desc" data-es>Las soluciones que ofrecemos son independientes de la industria y se basan en nuestras competencias principales.</p>
+    <p class="s-desc" data-en>The solutions we offer are industry-agnostic and based on our core competencies.</p>
+  </div>
+  <div class="sol-grid">
+    <div class="sol-card reveal">
+      <div class="sol-icon">📊</div>
+      <h3 data-es>Tableros de Control & BI</h3><h3 data-en>Dashboards & BI</h3>
+      <p data-es>Diseño y desarrollo de tableros analíticos que integran sus fuentes de datos y los presentan de forma clara, visual y accionable para la toma de decisiones.</p>
+      <p data-en>Design and development of analytical dashboards that integrate your data sources and present them clearly and actionably for decision-making.</p>
+      <div class="sol-tags"><span class="sol-tag">Power BI</span><span class="sol-tag">Excel</span><span class="sol-tag">KPIs</span><span class="sol-tag" data-es>Reportes automáticos</span><span class="sol-tag" data-en>Automated reports</span></div>
+    </div>
+    <div class="sol-card reveal">
+      <div class="sol-icon">🧩</div>
+      <h3 data-es>Sistemas de Gestión</h3><h3 data-en>Management Systems</h3>
+      <p data-es>Desarrollo de sistemas digitales a medida para automatizar procesos operativos, centralizar información y reducir la dependencia de procesos manuales.</p>
+      <p data-en>Custom digital systems to automate operational processes, centralize information and reduce dependence on manual processes.</p>
+      <div class="sol-tags"><span class="sol-tag">Google Apps Script</span><span class="sol-tag" data-es>Automatización</span><span class="sol-tag" data-en>Automation</span></div>
+    </div>
+    <div class="sol-card reveal">
+      <div class="sol-icon">📈</div>
+      <h3 data-es>Asesoramiento Financiero</h3><h3 data-en>Financial Advisory</h3>
+      <p data-es>Análisis de costos, estructura impositiva, planificación financiera y seguimiento de inversiones para personas y organizaciones.</p>
+      <p data-en>Cost analysis, tax structure, financial planning and investment tracking for individuals and organizations.</p>
+      <div class="sol-tags"><span class="sol-tag" data-es>Costos</span><span class="sol-tag" data-en>Costs</span><span class="sol-tag" data-es>Impuestos</span><span class="sol-tag" data-en>Tax</span><span class="sol-tag" data-es>Inversiones</span><span class="sol-tag" data-en>Investments</span></div>
+    </div>
+    <div class="sol-card reveal">
+      <div class="sol-icon">🎓</div>
+      <h3 data-es>Capacitaciones</h3><h3 data-en>Training Programs</h3>
+      <p data-es>Cursos presenciales y remotos de finanzas y análisis de datos. Más de 3 ediciones dictadas con formato de 6 clases. Adaptables a equipos corporativos.</p>
+      <p data-en>In-person and remote courses in finance and data analysis. Over 3 editions delivered in 6-class format. Adaptable to corporate teams.</p>
+      <div class="sol-tags"><span class="sol-tag" data-es>Finanzas</span><span class="sol-tag" data-en>Finance</span><span class="sol-tag">Excel</span><span class="sol-tag">In-company</span></div>
+    </div>
+    <div class="sol-card reveal">
+      <div class="sol-icon">🌐</div>
+      <h3 data-es>Desarrollo Web</h3><h3 data-en>Web Development</h3>
+      <p data-es>Diseño y desarrollo de sitios web profesionales. Soluciones modernas, de bajo costo de mantenimiento y rápida puesta en marcha.</p>
+      <p data-en>Design and development of professional websites. Modern solutions with low maintenance cost and fast go-live.</p>
+      <div class="sol-tags"><span class="sol-tag">Landing Pages</span><span class="sol-tag">HTML/CSS</span><span class="sol-tag">GitHub Pages</span></div>
+    </div>
+    <div class="sol-card reveal">
+      <div class="sol-icon">💡</div>
+      <h3 data-es>Consultoría Estratégica</h3><h3 data-en>Strategic Consulting</h3>
+      <p data-es>Diagnóstico de la madurez analítica del negocio, definición de indicadores clave y diseño de una estrategia de datos acorde a los objetivos de la organización.</p>
+      <p data-en>Business analytics maturity diagnosis, key indicator definition and data strategy design aligned with organizational goals.</p>
+      <div class="sol-tags"><span class="sol-tag" data-es>Control de Gestión</span><span class="sol-tag" data-en>Management Control</span><span class="sol-tag" data-es>Estrategia</span><span class="sol-tag" data-en>Strategy</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRÁCTICAS -->
+<section id="practicas">
+  <div class="reveal">
+    <div class="s-label"><span data-es>Nuestras Prácticas</span><span data-en>Our Practices</span></div>
+    <h2 class="s-title" style="color:#fff;"><span data-es>Competencias <span class="g">centrales</span></span><span data-en>Core <span class="g">competencies</span></span></h2>
+    <div class="s-bar"></div>
+    <p class="s-desc" data-es>Estas son las capacidades y conocimientos que constituyen la base de cada solución que ofrecemos.</p>
+    <p class="s-desc" data-en>These are the capabilities and knowledge that form the foundation of every solution we offer.</p>
+  </div>
+  <div class="prac-grid reveal">
+    <div class="prac-item">
+      <div class="prac-num">01</div>
+      <h4 data-es>Soluciones Empresariales</h4><h4 data-en>Business Solutions</h4>
+      <p data-es>Diseño e implementación de herramientas analíticas y de gestión para organizaciones de distintas industrias.</p>
+      <p data-en>Design and implementation of analytical and management tools for organizations across industries.</p>
+    </div>
+    <div class="prac-item">
+      <div class="prac-num">02</div>
+      <h4 data-es>Asesoramiento Financiero</h4><h4 data-en>Financial Advisory</h4>
+      <p data-es>Análisis de rentabilidad, estructuras de costos, planificación financiera y seguimiento de inversiones.</p>
+      <p data-en>Profitability analysis, cost structures, financial planning and investment tracking.</p>
+    </div>
+    <div class="prac-item">
+      <div class="prac-num">03</div>
+      <h4 data-es>Analítica de Personas</h4><h4 data-en>People Analytics</h4>
+      <p data-es>Indicadores de gestión de capital humano: desempeño, dotación, rotación y métricas organizacionales.</p>
+      <p data-en>Human capital management indicators: performance, headcount, turnover and organizational metrics.</p>
+    </div>
+    <div class="prac-item">
+      <div class="prac-num">04</div>
+      <h4 data-es>Automatización de Procesos</h4><h4 data-en>Process Automation</h4>
+      <p data-es>Flujos de trabajo automatizados que eliminan tareas manuales y mejoran la eficiencia operativa.</p>
+      <p data-en>Automated workflows that eliminate manual tasks and improve operational efficiency.</p>
+    </div>
+    <div class="prac-item">
+      <div class="prac-num">05</div>
+      <h4 data-es>Análisis de Negocio</h4><h4 data-en>Business Analysis</h4>
+      <p data-es>Identificación de oportunidades de mejora y definición de indicadores clave alineados a la estrategia.</p>
+      <p data-en>Identification of improvement opportunities and definition of key indicators aligned with strategy.</p>
+    </div>
+    <div class="prac-item">
+      <div class="prac-num">06</div>
+      <h4 data-es>Capacitación</h4><h4 data-en>Training</h4>
+      <p data-es>Programas de formación en finanzas y análisis de datos para equipos y profesionales.</p>
+      <p data-en>Finance and data analysis training programs for teams and professionals.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section id="nosotros">
+  <div class="reveal">
+    <div class="s-label"><span data-es>Nosotros</span><span data-en>About Us</span></div>
+    <h2 class="s-title"><span data-es>Experiencia real en <span class="g">industria y datos</span></span><span data-en>Real experience in <span class="g">industry and data</span></span></h2>
+    <div class="s-bar"></div>
+  </div>
+  <div class="nos-grid">
+    <div class="nos-text reveal">
+      <p data-es><strong>Lateral Thinking BI</strong> nació de la convicción de que las mejores decisiones de negocio se toman con información ordenada y bien presentada. Combinamos formación contable, experiencia en grandes organizaciones y conocimiento técnico en Business Intelligence.</p>
+      <p data-en><strong>Lateral Thinking BI</strong> was born from the conviction that the best business decisions are made with organized and well-presented information. We combine accounting expertise, experience in major organizations and technical knowledge in Business Intelligence.</p>
+      <p data-es>Contamos con trayectoria en empresas líderes de distintas industrias, lo que nos da un enfoque que va más allá de la herramienta: entendemos el negocio detrás de los números.</p>
+      <p data-en>We have a track record in leading companies across different industries, giving us an approach that goes beyond the tool: we understand the business behind the numbers.</p>
+      <p data-es>Llevamos ese conocimiento a organizaciones que quieren contar con las mismas herramientas analíticas que las grandes corporaciones, de manera accesible y práctica.</p>
+      <p data-en>We bring that knowledge to organizations that want access to the same analytical tools as large corporations, in an accessible and practical way.</p>
+    </div>
+    <div class="nos-visual reveal">
+      <div class="nos-logo-area">
+        <img src="logo.jpeg" alt="Lateral Thinking BI" onerror="this.style.display='none'"/>
+        <div>Lateral Thinking BI<small>Buenos Aires, Argentina</small></div>
+      </div>
+      <div class="nos-skills">
+        <span class="nos-skill" data-es>Contador Público</span><span class="nos-skill" data-en>CPA</span>
+        <span class="nos-skill">Power BI</span>
+        <span class="nos-skill" data-es>Excel Avanzado</span><span class="nos-skill" data-en>Advanced Excel</span>
+        <span class="nos-skill">People Analytics</span>
+        <span class="nos-skill" data-es>Control de Gestión</span><span class="nos-skill" data-en>Management Control</span>
+        <span class="nos-skill" data-es>Finanzas</span><span class="nos-skill" data-en>Finance</span>
+        <span class="nos-skill" data-es>Costos</span><span class="nos-skill" data-en>Costs</span>
+        <span class="nos-skill" data-es>Impuestos</span><span class="nos-skill" data-en>Tax</span>
+        <span class="nos-skill">Google Apps Script</span>
+      </div>
+      <div class="nos-quote" data-es>"No entregamos presentaciones — entregamos herramientas que se usan desde el primer día."</div>
+      <div class="nos-quote" data-en>"We don't deliver presentations — we deliver tools that are used from day one."</div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="reveal">
+    <div class="s-label"><span data-es>Stack Tecnológico</span><span data-en>Technology Stack</span></div>
+    <h2 class="s-title"><span data-es>Herramientas que <span class="g">dominamos</span></span><span data-en>Tools we <span class="g">master</span></span></h2>
+    <div class="s-bar"></div>
+    <p class="s-desc" data-es>Nos adaptamos al entorno tecnológico del cliente o implementamos el más adecuado según su necesidad.</p>
+    <p class="s-desc" data-en>We adapt to the client's technological environment or implement the most suitable one according to their needs.</p>
+  </div>
+  <div class="stack-grid reveal">
+    <span class="stack-item">Microsoft Power BI</span>
+    <span class="stack-item" data-es>Excel Avanzado</span><span class="stack-item" data-en>Advanced Excel</span>
+    <span class="stack-item">Google Sheets</span>
+    <span class="stack-item">Google Apps Script</span>
+    <span class="stack-item">Python</span>
+    <span class="stack-item">SQL</span>
+    <span class="stack-item">Power Query</span>
+    <span class="stack-item">DAX</span>
+    <span class="stack-item">Power Automate</span>
+    <span class="stack-item">HTML / CSS</span>
+    <span class="stack-item">GitHub Pages</span>
+  </div>
+</section>
+
+<!-- MODELO -->
+<section id="modelo">
+  <div class="reveal">
+    <div class="s-label"><span data-es>Modelos de Servicio</span><span data-en>Service Models</span></div>
+    <h2 class="s-title"><span data-es>Formas de <span class="g">trabajar juntos</span></span><span data-en>Ways to <span class="g">work together</span></span></h2>
+    <div class="s-bar"></div>
+    <p class="s-desc" data-es>Estas son las distintas modalidades en las que podemos colaborar.</p>
+    <p class="s-desc" data-en>These are the different ways in which we can collaborate.</p>
+  </div>
+  <div class="mod-grid">
+    <div class="mod-card reveal">
+      <div class="mod-num">01</div>
+      <h3 data-es>Proyecto Puntual</h3><h3 data-en>One-time Project</h3>
+      <p data-es>Desarrollo de una solución específica con entregable concreto. Alcance, plazo y precio definidos desde el inicio.</p>
+      <p data-en>Development of a specific solution with a concrete deliverable. Scope, timeline and price defined from the start.</p>
+    </div>
+    <div class="mod-card reveal">
+      <div class="mod-num">02</div>
+      <h3 data-es>Consultoría por Horas</h3><h3 data-en>Hourly Consulting</h3>
+      <p data-es>Soporte continuo para responder preguntas de negocio, ajustar herramientas existentes o acompañar decisiones estratégicas.</p>
+      <p data-en>Ongoing support to answer business questions, adjust existing tools or accompany strategic decisions.</p>
+    </div>
+    <div class="mod-card reveal">
+      <div class="mod-num">03</div>
+      <h3 data-es>Capacitación In-company</h3><h3 data-en>In-company Training</h3>
+      <p data-es>Cursos diseñados a medida para equipos de trabajo, según la necesidad y nivel del grupo.</p>
+      <p data-en>Courses designed for work teams, tailored to the group's needs and level.</p>
+    </div>
+    <div class="mod-card reveal">
+      <div class="mod-num">04</div>
+      <h3 data-es>Servicio Recurrente</h3><h3 data-en>Recurring Service</h3>
+      <p data-es>Actualización periódica de tableros y reportes, seguimiento de indicadores y asesoría financiera continua.</p>
+      <p data-en>Periodic update of dashboards and reports, indicator tracking and ongoing financial advisory.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="reveal">
+    <div class="s-label"><span data-es>Contáctenos</span><span data-en>Contact Us</span></div>
+    <h2 class="s-title" style="color:#fff;">
+      <span data-es>Conversemos sobre <span class="g">su negocio</span></span>
+      <span data-en>Let's talk about <span class="g">your business</span></span>
+    </h2>
+    <div class="s-bar"></div>
+    <p class="s-desc" data-es>Complete el formulario y nos ponemos en contacto a la brevedad. Primera consulta sin cargo.</p>
+    <p class="s-desc" data-en>Fill out the form and we'll be in touch shortly. First consultation is free of charge.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <p data-es>Cuéntenos su desafío o necesidad y le proponemos la solución más adecuada. Nos adaptamos a organizaciones de cualquier tamaño e industria.</p>
+      <p data-en>Tell us about your challenge or need and we will propose the most suitable solution. We adapt to organizations of any size and industry.</p>
+      <a href="https://www.linkedin.com/company/lateral-thinking-bi" target="_blank" class="contact-linkedin">
+        <span>💼</span>
+        <span>LinkedIn — Lateral Thinking BI</span>
+      </a>
+    </div>
+    <div class="reveal">
+      <form class="contact-form" onsubmit="submitForm(event)">
+        <div class="form-row">
+          <div class="form-field">
+            <label data-es>Nombre</label><label data-en>Name</label>
+            <input type="text" name="nombre" placeholder="Juan García" required/>
+          </div>
+          <div class="form-field">
+            <label data-es>Empresa</label><label data-en>Company</label>
+            <input type="text" name="empresa" placeholder="Mi Empresa S.A."/>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="juan@empresa.com" required/>
+        </div>
+        <div class="form-field">
+          <label data-es>Servicio de interés</label><label data-en>Service of interest</label>
+          <select name="servicio">
+            <option value="" data-es>Seleccionar...</option><option value="" data-en>Select...</option>
+            <option value="bi" data-es>Tableros de Control & BI</option><option value="bi" data-en>Dashboards & BI</option>
+            <option value="sistemas" data-es>Sistemas de Gestión</option><option value="sistemas" data-en>Management Systems</option>
+            <option value="financiero" data-es>Asesoramiento Financiero</option><option value="financiero" data-en>Financial Advisory</option>
+            <option value="capacitacion" data-es>Capacitación</option><option value="capacitacion" data-en>Training</option>
+            <option value="web" data-es>Desarrollo Web</option><option value="web" data-en>Web Development</option>
+            <option value="otro" data-es>Otro</option><option value="otro" data-en>Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label data-es>Mensaje</label><label data-en>Message</label>
+          <textarea name="mensaje" placeholder="Cuéntenos brevemente su necesidad..." data-es></textarea>
+          <textarea name="mensaje" placeholder="Briefly describe your need..." data-en></textarea>
+        </div>
+        <button type="submit" class="form-submit">
+          <span data-es>Enviar mensaje</span><span data-en>Send message</span>
+        </button>
+      </form>
+      <div id="form-success">
+        <strong data-es>✓ Mensaje enviado correctamente.</strong><strong data-en>✓ Message sent successfully.</strong><br>
+        <span data-es>Nos pondremos en contacto a la brevedad.</span><span data-en>We will be in touch shortly.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-brand">Lateral Thinking <em>BI</em></span>
+  <p data-es>© 2025 Lateral Thinking BI. Todos los derechos reservados.</p>
+  <p data-en>© 2025 Lateral Thinking BI. All rights reserved.</p>
+  <p>Buenos Aires, Argentina</p>
+</footer>
+
+<script>
+  // Lang toggle
+  function toggleLang() {
+    const html = document.documentElement;
+    html.dataset.lang = html.dataset.lang === 'es' ? 'en' : 'es';
+  }
+
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Mobile menu
+  function toggleMenu() {
+    document.getElementById('mobile-menu').classList.toggle('open');
+  }
+
+  // Reveal on scroll
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Form submit (simulated — replace with Formspree or similar)
+  function submitForm(e) {
+    e.preventDefault();
+    e.target.style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+  }
+</script>
+</body>
+</html>
